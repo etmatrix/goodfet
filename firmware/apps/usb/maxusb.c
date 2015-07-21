@@ -14,11 +14,11 @@
 #include <iomacros.h>
 #endif
 
-#include "maxusb.h"
-
 #define MAXUSBAPPLICATION
 
 #include "platform.h"
+
+#include "maxusb.h"
 
 
 // define for the app list.
@@ -40,8 +40,14 @@ app_t const maxusb_app = {
 //! Set up the pins for SPI mode.
 void maxusb_setup(){
   SETSS;
+#ifdef SPIRDIR
   SPIDIR|=MOSI+SCK+BIT0; //BIT0 might be SS
   SPIDIR&=~MISO;
+#else
+  SPICLKDIR|=SCK;
+  SPIMOSIDIR|=MOSI;
+  SPIMISODIR&=~MISO;
+#endif
   P4DIR&=~TST; //TST line becomes interrupt input.
   P4DIR&=~BIT7; //GPX pin.
   P2DIR|=RST;

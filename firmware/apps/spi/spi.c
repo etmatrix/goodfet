@@ -16,11 +16,12 @@
 /* #include <iomacros.h> */
 #endif
 
-#include "spi.h"
 
 #define SPIAPPLICATION
 
 #include "platform.h"
+
+#include "spi.h"
 
 //! Handles a monitor command.
 void spi_handle_fn( uint8_t const app,
@@ -53,8 +54,14 @@ app_t const spi_app = {
 //! Set up the pins for SPI mode.
 void spisetup(){
   SETSS;
+#ifdef SPIDIR
   SPIDIR|=MOSI+SCK+BIT0; //BIT0 might be SS
   SPIDIR&=~MISO;
+#else
+  SPICLKDIR|=SCK;
+  SPIMOSIDIR|=MOSI;
+  SPIMISODIR&=~MISO;
+#endif
   DIRSS;
   DIRCE;
 
@@ -385,15 +392,27 @@ void spi_handle_fn( uint8_t const app,
 		CLRTST; // power off
 		msdelay(10);
 		// Switch MISO to OUT
+#ifdef SPIDIR
 		SPIDIR |= MISO;
+#else
+		SPIMISODIR |= MISO;
+#endif
 		CLRSS;
 		CLRCLK;
 		CLRMOSI;
+#ifdef SPIOUT
 		SPIOUT &= ~MISO;
+#else
+		SPIMISOOUT &= ~MISO;
+#endif
 		SETTST; // power on
 		msdelay(20);
 		// Set MISO back to IN
+#ifdef SPIDIR
 		SPIDIR &= ~MISO;
+#else
+		SPIMISODIR &= ~MISO;
+#endif
 		// Transmit
 		for (i = 0; i < len; i++)
 			cmddata[i] = spitrans8(cmddata[i]);

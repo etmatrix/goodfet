@@ -19,7 +19,7 @@ GCC?=msp430-gcc -mmcu=$(mcu)
 LDFLAGS?=-mmcu=$(mcu) #-Wl,-dT ldscripts/$(mcu).x
 
 CCEXTRA ?=  $(CFLAGS) -D$(mcu) -D$(platform) -Dplatform=$(platform) -Dboard=$(board) $(GCCINC) -I include -I platforms
-CC =$(GCC) -Wall -O1 -fno-strict-aliasing -g   $(CCEXTRA)
+CC =$(GCC) -Wall -O1 -fno-strict-aliasing -Wunused $(CCEXTRA)
 
 # Available Applications
 # ======================

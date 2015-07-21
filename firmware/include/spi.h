@@ -19,19 +19,23 @@
 # define TST  (1 << PA4)
 # define XRST (1 << PA5)
 #else
-# define MOSI BIT1
-# define MISO BIT2
-# define SCK  BIT3
-# define TST  BIT0
-# define RST  BIT6
+# ifndef MOSI
+#  define MOSI BIT1
+#  define MISO BIT2
+#  define SCK  BIT3
+#  define TST  BIT0
+#  define RST  BIT6
+# endif
 #endif
 //Apimotev2 SET/CLRRST needs to be on pin 21, so 2.1 -- just redefine RST to BIT0
 
-#define SETMOSI SPIOUT|=MOSI
-#define CLRMOSI SPIOUT&=~MOSI
-#define SETCLK SPIOUT|=SCK
-#define CLRCLK SPIOUT&=~SCK
-#define READMISO (SPIIN&MISO?1:0)
+#ifndef SETMOSI
+# define SETMOSI SPIOUT|=MOSI
+# define CLRMOSI SPIOUT&=~MOSI
+# define SETCLK SPIOUT|=SCK
+# define CLRCLK SPIOUT&=~SCK
+# define READMISO (SPIIN&MISO?1:0)
+#endif
 
 //FIXME this should be defined by the platform.
 #if (platform == donbfet)
@@ -40,10 +44,12 @@
 # define SETRST PORTA|=(1 << PA5);
 # define CLRRST PORTA&=~(1 << PA5);
 #else
-# define SETTST P4OUT|=TST
-# define CLRTST P4OUT&=~TST
-# define SETRST P2OUT|=RST
-# define CLRRST P2OUT&=~RST
+# ifndef SETTST
+#  define SETTST P4OUT|=TST
+#  define CLRTST P4OUT&=~TST
+#  define SETRST P2OUT|=RST
+#  define CLRRST P2OUT&=~RST
+# endif
 #endif
 
 //! Set up the pins for SPI mode.

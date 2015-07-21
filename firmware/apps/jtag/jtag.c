@@ -106,10 +106,19 @@ void jtag_reset_tap()
 //! Set up the pins for JTAG mode.
 void jtag_setup()
 {
+#ifdef SPIMOSIDIR
+	SPIMOSIDIR|=MOSI;
+	SPICLKDIR|=SCK;
+	SPIMISODIR&=~MISO;
+	DIRSS;
+	SETTST;
+	SETRST;
+#else
 	P5DIR|=MOSI+SCK+TMS;
 	P5DIR&=~MISO;
 	P4DIR|=TST;
 	P2DIR|=RST;
+#endif
 	msdelay(100);
 	jtag_state = UNKNOWN;
 }
@@ -117,8 +126,16 @@ void jtag_setup()
 //! Stop JTAG, release pins
 void jtag_stop()
 {
+#ifdef SPIMOSIDIR
+	CLRTST;
+	CLRRST;
+	CLRTDI;
+	CLRTCK;
+	CLRTMS;
+#else
 	P5OUT=0;
 	P4OUT=0;
+#endif
 }
 
 //! Get into Shift-IR or Shift-DR state

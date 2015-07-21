@@ -94,50 +94,63 @@ uint32_t jtag_get_device_id(int chip);
 
 //Pins.  Both SPI and JTAG names are acceptable.
 //#define SS   BIT0
-#define MOSI BIT1
-#define MISO BIT2
-#define SCK  BIT3
+#ifndef MOSI
+# define MOSI BIT1
+# define MISO BIT2
+# define SCK  BIT3
+#endif
 
-#define TMS BIT0
-#define TDI BIT1
-#define TDO BIT2
-#define TCK BIT3
+#ifndef TMS
+# define TMS BIT0
+# define TDI BIT1
+# define TDO BIT2
+# define TCK BIT3
+#endif
 
 #define TCLK TDI
 
 //These are not on P5
-#define RST BIT6
-#define TST BIT0
+#ifndef RST
+# define RST BIT6
+# define TST BIT0
+#endif
 
 //This could be more accurate.
 //Does it ever need to be?
 #define JTAGSPEED 20
 #define JTAGDELAY(x) delay(x)
 
+#ifndef SETMOSI
+# define SETMOSI SPIOUT|=MOSI
+# define CLRMOSI SPIOUT&=~MOSI
+# define SETCLK SPIOUT|=SCK
+# define CLRCLK SPIOUT&=~SCK
+# define READMISO (SPIIN&MISO?1:0)
+#endif
+#ifndef SETTMS
+# define SETTMS SPIOUT|=TMS
+# define CLRTMS SPIOUT&=~TMS
+# define SETTCK SPIOUT|=TCK
+# define CLRTCK SPIOUT&=~TCK
+# define SETTDI SPIOUT|=TDI
+# define CLRTDI SPIOUT&=~TDI
+#endif
 
-#define SETMOSI SPIOUT|=MOSI
-#define CLRMOSI SPIOUT&=~MOSI
-#define SETCLK SPIOUT|=SCK
-#define CLRCLK SPIOUT&=~SCK
-#define READMISO (SPIIN&MISO?1:0)
-#define SETTMS SPIOUT|=TMS
-#define CLRTMS SPIOUT&=~TMS
-#define SETTCK SPIOUT|=TCK
-#define CLRTCK SPIOUT&=~TCK
-#define SETTDI SPIOUT|=TDI
-#define CLRTDI SPIOUT&=~TDI
+#ifndef SETTST
+# define SETTST P4OUT|=TST
+# define CLRTST P4OUT&=~TST
+# define SETRST P2OUT|=RST
+# define CLRRST P2OUT&=~RST
 
-#define SETTST P4OUT|=TST
-#define CLRTST P4OUT&=~TST
-#define SETRST P2OUT|=RST
-#define CLRRST P2OUT&=~RST
-
-#define SETTCLK SETTDI
-#define CLRTCLK CLRTDI
+# define SETTCLK SETTDI
+# define CLRTCLK CLRTDI
+#endif
 
 extern int savedtclk;
-#define SAVETCLK savedtclk=SPIOUT&TCLK;
-#define RESTORETCLK if(savedtclk) SPIOUT|=TCLK; else SPIOUT&=~TCLK
+#ifndef SAVETCLK
+# define SAVETCLK savedtclk=SPIOUT&TCLK;
+# define RESTORETCLK if(savedtclk) SPIOUT|=TCLK; else SPIOUT&=~TCLK
+#endif
 
 //JTAG commands
 #define JTAG_IR_SHIFT 0x80

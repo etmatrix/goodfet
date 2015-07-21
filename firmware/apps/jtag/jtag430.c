@@ -188,8 +188,6 @@ void jtag430_writeflash(unsigned int adr, unsigned int data){
   //jtag430_releasecpu();
 }
 
-
-
 //! Power-On Reset
 void jtag430_por(){
   // Perform Reset
@@ -313,7 +311,7 @@ unsigned char jtag430x2_start(){
   SETTST;
   msdelay(10);//5
   SETRST;
-  P5DIR&=~RST;
+  JTAGRSTDIR&=~RST;
   
   delay(0xFFFF);
   
@@ -342,7 +340,7 @@ void jtag430_start(){
   SETTST;
   delay(50);  //50
   SETRST;
-  P5DIR&=~RST;
+  JTAGRSTDIR&=~RST;
   delay(0xFFFF);
   #endif
   

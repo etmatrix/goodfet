@@ -234,7 +234,6 @@ class GoodFET:
                 #self.serialport.write(chr(0x80));
                 #self.serialport.write(chr(0x80));
                 
-                
                 #self.serialport.flushInput()
                 #self.serialport.flushOutput()
                 #time.sleep(60);

@@ -33,9 +33,17 @@ pulseloop3:
 	ret
 
 jtag430_tclk_flashpulses_16mhz:
+#ifdef SPIMOSIOUT
+	mov #SPIMOSIOUT, r14
+#else
 	mov #P5OUT, r14
+#endif
 pulseloop16:	
+#ifdef TCLK
+	bis.b #TCLK, @r14		;SETTCLK, 3 cycles
+#else
 	bis.b #2, @r14		;SETTCLK, 3 cycles
+#endif
 	sub #1, r15		; 1 cycle
 	;;  1+3+3+1+2=10, beneath limits,
 
@@ -58,7 +66,11 @@ pulseloop16:
 	pop r11			; 2 cycles
 	
 	
+#ifdef TCLK
+	bic.b #TCLK, @r14		;CLRTCLK, 3 cycles
+#else
 	bic.b #2, @r14		;CLRTCLK, 3 cycles
+#endif
 	tst r15			; 1 cycle
 	jnz pulseloop16		; 2 cycles
 	ret

@@ -141,9 +141,11 @@ void msdelay(unsigned int ms){
 void prep_timer()
 {
   #ifdef MSP430
+#ifdef BCSCTL2
   BCSCTL2 = 0x00; /* In particular, use DCOCLK as SMCLK source with
 		     divider 1. Hence, Timer B ticks with system
 		     clock at 16 MHz. */
+#endif
 
   TBCTL = 0x0204; /* Driven by SMCLK; disable Timer B interrupts;
 		     reset timer in case it was previously in use */

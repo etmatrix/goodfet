@@ -496,8 +496,9 @@ void jtag430_handle_fn(uint8_t const app,
       //debugstr("Poking flash memory.");
       jtag430_writeflash(at+(i<<1),cmddataword[i+2]);
       //Reflash if needed.  Try this twice to save grace?
-      if(cmddataword[i]!=jtag430_readmem(at))
-	jtag430_writeflash(at+(i<<1),cmddataword[i+2]);
+      //jtag430_resettap();
+      //if(cmddataword[i]!=jtag430_readmem(at))
+ // 	jtag430_writeflash(at+(i<<1),cmddataword[i+2]);
     }
     
     //Return result of first write as a word.

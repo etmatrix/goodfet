@@ -24,9 +24,9 @@
 
 #ifndef CMDDATALEN
 //512 bytes
-#define CMDDATALEN 0x204
-//4k
-//#define CMDDATALEN 0x1004
+//#define CMDDATALEN 0x204
+//6k
+#define CMDDATALEN 0x1804
 #endif
 
 //! Global data buffer.

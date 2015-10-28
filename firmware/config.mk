@@ -133,7 +133,7 @@ endif
 ifneq (,$(findstring $(board),tilaunchpad5529lp))
 mcu ?= msp430f5529
 platform := tilaunchpad5529lp
-config := monitor spi jtag jtag430 jtag430x2 jtagarm7 ejtag jtagxscale openocd avr pic smartcard ps2 slc2 owe maxusb
+config := monitor spi jtag jtag430 jtag430x2 jtagarm7 ejtag jtagxscale openocd avr pic smartcard ps2 slc2 owe maxusb chipcon
 # CFLAGS := -DDEBUG_LEVEL=3 -DDEBUG_START=1 -DINBAND_DEBUG
 # CFLAGS+= -Wall
 endif

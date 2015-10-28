@@ -34,13 +34,13 @@ for i in h._buf.keys():
     else:
         skip = 1;
     print "Hex: %04x %04x" % (i, h[i>>1]);
+    data = [ h[i>>1] & 0xFF, h[i>>1] >> 8 ];
     for a in range(1,5):
-        client.MSP430pokeflash(i, h[i>>1]);
+        client.MSP430pokeflashblock(i, data);
 
-#        sleep(0.10);
-        data = client.MSP430peek(i);
-        print "Read: %04x %04x" % (i, data);
-        if data!=h[i>>1]:
+        data2 = client.MSP430peek(i);
+        print "Read: %04x %04x" % (i, data2);
+        if data2!=h[i>>1]:
             print "retry";
         else:
             break;

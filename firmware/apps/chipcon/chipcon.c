@@ -65,13 +65,17 @@ app_t const chipcon_app = {
 
 //Normal pins.
 #else  
+#ifndef SPIMOSIDIR
 #define RST  BIT0       // P5.0
+#endif
 #define dputs(s)
 #endif
 
+#ifndef SPIMOSIDIR
 #define MOSI BIT2
 #define MISO BIT2
 #define SCK  BIT3
+#endif
 
 
 //This could be more accurate.
@@ -81,11 +85,18 @@ app_t const chipcon_app = {
 //#define CCDELAY(x) delay_ms(x)
 #define CCDELAY(x)
 
+#ifndef SPIMOSIDIR
 #define SETMOSI SPIOUT|=MOSI
 #define CLRMOSI SPIOUT&=~MOSI
 #define SETCLK SPIOUT|=SCK
 #define CLRCLK SPIOUT&=~SCK
 #define READMISO (SPIIN&MISO?1:0)
+#else
+#undef SETMOSI
+#define SETMOSI SPIMISOOUT|=MISO
+#undef CLRMOSI
+#define CLRMOSI SPIMISOOUT&=~MISO
+#endif
 
 #if (platform == tilaunchpad)
 #  if (SPIDIR != P5DIR)
@@ -97,12 +108,24 @@ app_t const chipcon_app = {
 #  define SETRST  P3OUT|=RST
 #  define CLRRST  P3OUT&=~RST
 #else
+#    ifdef SPIMISODIR
+#        undef SETRST
+#        undef CLRRST
+#        define SETRST SETSS
+#        define CLRRST CLRSS
+#    else
 #  define SETRST  P5OUT|=RST
 #  define CLRRST  P5OUT&=~RST
+#    endif
 #endif
 
+#ifdef SPIMISODIR
+#define CCWRITE SPIMISODIR|=MISO
+#define CCREAD SPIMISODIR&=~MISO
+#else
 #define CCWRITE SPIDIR|=MOSI
 #define CCREAD SPIDIR&=~MISO
+#endif
 
 //! Set up the pins for CC mode.  Does not init debugger.
 void ccsetup(){
@@ -113,9 +136,18 @@ void ccsetup(){
   P3OUT|=RST;
   P3DIR|=RST;
 	dputs("done ccsetup");
+#else 
+#ifdef SPIMOSIDIR
+	SETSS;
+	SPIMISOOUT|=MISO;
+	SETCLK;
+        SPIMISODIR|=MISO;
+        SPICLKDIR|=SCK;
+        DIRSS; // RST
 #else
   SPIOUT|=MOSI+SCK+RST;
   SPIDIR|=MOSI+SCK+RST;
+#endif
 #endif
   //P5REN=0xFF;
 }
@@ -144,27 +176,53 @@ void ccdebuginit(){
   SPIOUT|=MOSI+SCK;
   P3OUT|=RST;
 #else
+#ifdef SPIMISOOUT
+  SPIMISOOUT|=MISO;
+  SETCLK;
+  SETSS; // RST
+#else
   SPIOUT|=MOSI+SCK+RST;
+#endif
 #endif
 
   delay(30); //So the beginning is ready for glitching.
 
   //Two positive debug clock pulses while !RST is low.
   //Take RST low, pulse twice, then high.
+#ifdef SPIMISOOUT
+  CLRCLK;
+#else
   SPIOUT&=~SCK;
+#endif
   delay(10);
   CLRRST;
 
   delay(10);
 
   //Two rising edges.
+#ifdef SPIMISOOUT
+  SPICLKOUT^=SCK; // up
+#else
   SPIOUT^=SCK; //up
+#endif
   delay(1);
+#ifdef SPIMISOOUT
+  SPICLKOUT^=SCK; // down
+#else
   SPIOUT^=SCK; //down
+#endif
   delay(1);
+#ifdef SPIMISOOUT
+  SPICLKOUT^=SCK; // up
+#else
   SPIOUT^=SCK; //up
+#endif
   delay(1);
+#ifdef SPIMISOOUT
+  SPICLKOUT^=SCK; // Unnecessary.
+#else
   SPIOUT^=SCK; //Unnecessary.
+#endif
   delay(1);
   //delay(0);
 

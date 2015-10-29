@@ -17,6 +17,18 @@
 
 #define useuart1
 
+/* PIN MAPPING
+ *          -----------------------------
+ *          |        P3.4  1  2 VCC     |
+ *          |        P3.3  3  4         |
+ *     ------        P3.5  5  6         |
+ *     | USB         P2.7  7  8 P6.0    |
+ *     ------        GND   9 10         |
+ *          |        P6.1 11 12 RX      |
+ *          |GoodFET      13 14 TX      |
+ *          -----------------------------
+ */
+
 //LED on P1.0
 #define PLEDOUT P1OUT
 #define PLEDDIR P1DIR

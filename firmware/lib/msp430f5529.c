@@ -59,22 +59,22 @@ void setbaud1(unsigned char rate)
            UCA1BR0 = 0x82;
            break;
        case 2://19200 baud
-          UCA1BR1 = 0x03;
-          UCA1BR0 = 0x41;
-          break;
+           UCA1BR1 = 0x03;
+           UCA1BR0 = 0x41;
+           break;
        case 3://38400 baud
-          UCA1BR1 = 0xa0;
-          UCA1BR0 = 0x01;
-          break;
+           UCA1BR1 = 0xa0;
+           UCA1BR0 = 0x01;
+           break;
        case 4://57600 baud
-          UCA1BR1 = 0x1d;
-          UCA1BR0 = 0x01;
-          break;
+           UCA1BR1 = 0x1d;
+           UCA1BR0 = 0x01;
+           break;
        default:
        case 5://115200 baud
-          UCA1BR0 = 0x8a;
-          UCA1BR1 = 0x00;
-          break;
+           UCA1BR0 = 0x8a;
+           UCA1BR1 = 0x00;
+           break;
     }
 }
 
